@@ -18,10 +18,10 @@ import java.time.Duration;
 public class AppConfiguration {
 
 
-    @Value("${app-configuration.rest-template.connection-timeout:30}")
+    @Value("${app-configuration.rest-template.connection-timeout:3}")
     public long connectionTimeout;
 
-    @Value("${app-configuration.rest-template.read-timeout:30}")
+    @Value("${app-configuration.rest-template.read-timeout:3}")
     public long readTimeout;
 
     @Bean
