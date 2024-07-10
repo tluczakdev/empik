@@ -1,20 +1,17 @@
 package org.interview.empik.dto;
 
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.*;
 
-@Data
+@Getter
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
 public class GitHubUserDto {
-    public String id;
-    public String login;
-    public String name;
-    public String avatarUrl;
-    public String createdAt;
-    public Integer followers;
-    public Integer publicRepos;
+    String id;
+    String login;
+    String name;
+    String avatarUrl;
+    String createdAt;
+    Integer followers;
+    Integer publicRepos;
 }
