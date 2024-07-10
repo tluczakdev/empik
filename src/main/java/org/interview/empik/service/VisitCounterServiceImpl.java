@@ -4,8 +4,6 @@ import org.interview.empik.entity.VisitCounter;
 import org.interview.empik.repository.VisitCounterRepository;
 import org.springframework.stereotype.Service;
 
-import java.util.Optional;
-
 @Service
 public class VisitCounterServiceImpl implements VisitCounterService {
 
@@ -18,16 +16,13 @@ public class VisitCounterServiceImpl implements VisitCounterService {
     @Override
     public void visitedBy(String login) {
 
-        if (login == null || login.isBlank()) return;
+        VisitCounter visitCounter = visitCounterRepository.findByLogin(login)
+                .map(vc -> {
+                    vc.setRequestCounter(vc.getRequestCounter() + 1);
+                    return vc;
+                })
+                .orElse(new VisitCounter(login, 1));
 
-        Optional<VisitCounter> oVisitCounter = visitCounterRepository.findByLogin(login);
-
-        if (oVisitCounter.isPresent()) {
-            var visitCounter = oVisitCounter.get();
-            visitCounter.setRequestCounter(visitCounter.getRequestCounter() + 1);
-            visitCounterRepository.save(visitCounter);
-        } else {
-            visitCounterRepository.save(new VisitCounter(login, 1));
-        }
+        visitCounterRepository.save(visitCounter);
     }
 }

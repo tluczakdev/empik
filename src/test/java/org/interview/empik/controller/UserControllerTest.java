@@ -3,11 +3,16 @@ package org.interview.empik.controller;
 import org.interview.empik.dto.UserDto;
 import org.interview.empik.service.UserService;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.Arguments;
+import org.junit.jupiter.params.provider.MethodSource;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.web.client.HttpClientErrorException;
+
+import java.util.stream.Stream;
 
 import static org.mockito.Mockito.when;
 import static org.springframework.http.MediaType.APPLICATION_JSON;
@@ -49,6 +54,25 @@ class UserControllerTest {
         mockMvc.perform(get(String.format("/v1/users/%s", login))
                         .contentType(APPLICATION_JSON))
                 .andExpect(status().isNotFound());
+    }
+
+    @ParameterizedTest
+    @MethodSource("logins")
+    public void ifLoginIsNotCorrectReturnStatusHttp400(String login) throws Exception {
+        mockMvc.perform(get(String.format("/v1/users/%s", login))
+                        .contentType(APPLICATION_JSON))
+                .andExpect(status().isBadRequest());
+    }
+
+    public static Stream<Arguments> logins() {
+        return Stream.of(
+                Arguments.of(" "),
+                Arguments.of("a".repeat(40)),
+                Arguments.of("a_s"),
+                Arguments.of("a--s"),
+                Arguments.of("-a-s"),
+                Arguments.of("a-s-")
+        );
     }
 
     private UserDto createDummyUserDto() {
