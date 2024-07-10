@@ -7,8 +7,9 @@ Application provided endpoint:
 GET /api/v1/users/{login}
 
 Using:
-- H2 Database storing in memory
 - Spring Boot
+- H2 Database storing in memory
+- Hibernate
 - Lombok
 - JUnit
 
