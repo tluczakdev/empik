@@ -4,7 +4,10 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.interview.empik.common.exception.InternalException;
 import org.interview.empik.dto.GitHubUserDto;
+import org.springframework.retry.annotation.Retryable;
 import org.springframework.stereotype.Service;
+import org.springframework.web.client.HttpServerErrorException;
+import org.springframework.web.client.ResourceAccessException;
 import org.springframework.web.client.RestTemplate;
 
 import static java.net.URI.create;
@@ -33,6 +36,7 @@ public class GitHubUserServiceImpl implements GitHubUserService {
         return convertResponseBodyToGitHubUserDto(responseBody);
     }
 
+    @Retryable(retryFor = {ResourceAccessException.class, HttpServerErrorException.class}, maxAttempts = 2)
     private String retrieveGitHubUserData(String login) {
         return restTemplate
                 .getForEntity(create(API_URL + login), String.class)

@@ -4,12 +4,25 @@ import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.PropertyNamingStrategies;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.boot.web.client.RestTemplateBuilder;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.retry.annotation.EnableRetry;
 import org.springframework.web.client.RestTemplate;
 
+import java.time.Duration;
+
 @Configuration
+@EnableRetry
 public class AppConfiguration {
+
+
+    @Value("${app-configuration.rest-template.connection-timeout:30}")
+    public long connectionTimeout;
+
+    @Value("${app-configuration.rest-template.read-timeout:30}")
+    public long readTimeout;
 
     @Bean
     public ObjectMapper objectMapper() {
@@ -22,6 +35,9 @@ public class AppConfiguration {
 
     @Bean
     public RestTemplate restTemplate() {
+        RestTemplateBuilder builder = new RestTemplateBuilder();
+        builder.setConnectTimeout(Duration.ofSeconds(connectionTimeout));
+        builder.setReadTimeout(Duration.ofSeconds(readTimeout));
         return new RestTemplate();
     }
 }
